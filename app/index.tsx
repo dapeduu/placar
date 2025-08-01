@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useGameStore from "@/stores/useGameStore";
 import {
   Dimensions,
   StatusBar,
@@ -6,13 +6,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ActionButtons from "./components/ActionButtons";
+import Clock from "./components/Clock";
 
 // Get the full screen dimensions
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export default function Index() {
-  const [leftCounter, setLeftCounter] = useState(0);
-  const [rightCounter, setRightCounter] = useState(0);
+  const { teams, sets, incrementTeamAScore, incrementTeamBScore } =
+    useGameStore();
+
+  const leftTeam = teams[0];
+  const rightTeam = teams[1];
+
+  const leftTeamScore = sets[sets.length - 1].teamAScore;
+  const rightTeamScore = sets[sets.length - 1].teamBScore;
 
   return (
     <>
@@ -39,14 +47,14 @@ export default function Index() {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => setLeftCounter(leftCounter + 1)}
+          onPress={incrementTeamAScore}
           activeOpacity={0.8}
         >
           <Text style={{ color: "white", fontSize: 24, marginBottom: 20 }}>
-            Time azul
+            {leftTeam.name}
           </Text>
           <Text style={{ color: "white", fontSize: 48, fontWeight: "bold" }}>
-            {leftCounter}
+            {leftTeamScore}
           </Text>
         </TouchableOpacity>
 
@@ -58,16 +66,19 @@ export default function Index() {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => setRightCounter(rightCounter + 1)}
+          onPress={incrementTeamBScore}
           activeOpacity={0.8}
         >
           <Text style={{ color: "white", fontSize: 24, marginBottom: 20 }}>
-            Time vermelho
+            {rightTeam.name}
           </Text>
           <Text style={{ color: "white", fontSize: 48, fontWeight: "bold" }}>
-            {rightCounter}
+            {rightTeamScore}
           </Text>
         </TouchableOpacity>
+
+        <Clock />
+        <ActionButtons />
       </View>
     </>
   );
