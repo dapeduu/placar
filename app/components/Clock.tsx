@@ -13,6 +13,15 @@ export default function Clock(props: ViewProps) {
     return () => clearInterval(interval);
   }, []);
 
+  const formatTime = (time: number) => {
+    return String(time).padStart(2, "0");
+  };
+
+  const hours = Math.floor(elapsedTimeInSeconds / 3600);
+  const remainingAfterHours = elapsedTimeInSeconds % 3600;
+  const minutes = Math.floor(remainingAfterHours / 60);
+  const seconds = remainingAfterHours % 60;
+
   return (
     <View
       style={{
@@ -23,10 +32,13 @@ export default function Clock(props: ViewProps) {
         backgroundColor: "white",
         padding: 10,
         borderRadius: 10,
+        width: 140,
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-        {elapsedTimeInSeconds}
+        {formatTime(hours)} : {formatTime(minutes)} : {formatTime(seconds)}
       </Text>
     </View>
   );
