@@ -2,7 +2,8 @@ import useGameStore from "@/stores/useGameStore";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function ActionButtons() {
-  const { startMatch, finishMatch, resetCurrentSet } = useGameStore();
+  const { startMatch, finishMatch, resetCurrentSet, undoLastEvent } =
+    useGameStore();
 
   return (
     <View
@@ -30,6 +31,12 @@ export default function ActionButtons() {
         onPress={resetCurrentSet}
       >
         <Text>Reset Current Set</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
+        onPress={undoLastEvent}
+      >
+        <Text>Undo Last Event</Text>
       </TouchableOpacity>
     </View>
   );

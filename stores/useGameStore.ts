@@ -12,8 +12,11 @@ type Team = {
 };
 
 type Set = {
-  teamAScore: number;
-  teamBScore: number;
+  events: ScoreEvent[];
+};
+
+type ScoreEvent = {
+  team: Team;
 };
 
 type Match = {
@@ -32,6 +35,7 @@ type MatchActions = {
   getElapsedTime: () => number;
   incrementTeamAScore: () => void;
   incrementTeamBScore: () => void;
+  undoLastEvent: () => void;
 };
 
 const useGameStore = create<Match & MatchActions>()(
@@ -51,8 +55,7 @@ const useGameStore = create<Match & MatchActions>()(
     ],
     sets: [
       {
-        teamAScore: 0,
-        teamBScore: 0,
+        events: [],
       },
     ],
     startMatch: () => {
@@ -68,16 +71,14 @@ const useGameStore = create<Match & MatchActions>()(
     addNewSet: () => {
       set((state) => {
         state.sets.push({
-          teamAScore: 0,
-          teamBScore: 0,
+          events: [],
         });
       });
     },
     resetCurrentSet: () => {
       set((state) => {
         state.sets[state.sets.length - 1] = {
-          teamAScore: 0,
-          teamBScore: 0,
+          events: [],
         };
       });
     },
@@ -92,12 +93,21 @@ const useGameStore = create<Match & MatchActions>()(
     },
     incrementTeamAScore: () => {
       set((state) => {
-        state.sets[state.sets.length - 1].teamAScore += 1;
+        state.sets[state.sets.length - 1].events.push({
+          team: state.teams[0],
+        });
       });
     },
     incrementTeamBScore: () => {
       set((state) => {
-        state.sets[state.sets.length - 1].teamBScore += 1;
+        state.sets[state.sets.length - 1].events.push({
+          team: state.teams[1],
+        });
+      });
+    },
+    undoLastEvent: () => {
+      set((state) => {
+        state.sets[state.sets.length - 1].events.pop();
       });
     },
   }))

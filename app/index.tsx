@@ -19,8 +19,12 @@ export default function Index() {
   const leftTeam = teams[0];
   const rightTeam = teams[1];
 
-  const leftTeamScore = sets[sets.length - 1].teamAScore;
-  const rightTeamScore = sets[sets.length - 1].teamBScore;
+  const leftTeamScore = sets[sets.length - 1].events.filter(
+    (event) => event.team === leftTeam
+  ).length;
+  const rightTeamScore = sets[sets.length - 1].events.filter(
+    (event) => event.team === rightTeam
+  ).length;
 
   return (
     <>
