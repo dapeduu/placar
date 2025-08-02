@@ -1,13 +1,8 @@
 import useGameStore from "@/stores/useGameStore";
-import {
-  Dimensions,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, StatusBar, View } from "react-native";
 import ActionButtons from "./components/ActionButtons";
 import Clock from "./components/Clock";
+import TeamScore from "./components/TeamScore";
 
 // Get the full screen dimensions
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
@@ -43,43 +38,19 @@ export default function Index() {
           flexDirection: "row",
         }}
       >
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            height: "100%",
-            backgroundColor: "blue",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+        <TeamScore
+          name={leftTeam.name}
+          score={leftTeamScore}
           onPress={incrementTeamAScore}
-          activeOpacity={0.8}
-        >
-          <Text style={{ color: "white", fontSize: 24, marginBottom: 20 }}>
-            {leftTeam.name}
-          </Text>
-          <Text style={{ color: "white", fontSize: 48, fontWeight: "bold" }}>
-            {leftTeamScore}
-          </Text>
-        </TouchableOpacity>
+          style={{ backgroundColor: "red" }}
+        />
 
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            height: "100%",
-            backgroundColor: "red",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+        <TeamScore
+          name={rightTeam.name}
+          score={rightTeamScore}
           onPress={incrementTeamBScore}
-          activeOpacity={0.8}
-        >
-          <Text style={{ color: "white", fontSize: 24, marginBottom: 20 }}>
-            {rightTeam.name}
-          </Text>
-          <Text style={{ color: "white", fontSize: 48, fontWeight: "bold" }}>
-            {rightTeamScore}
-          </Text>
-        </TouchableOpacity>
+          style={{ backgroundColor: "blue" }}
+        />
 
         <Clock />
         <ActionButtons />
