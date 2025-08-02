@@ -4,12 +4,16 @@ import ActionButtons from "./components/ActionButtons";
 import Clock from "./components/Clock";
 import TeamScore from "./components/TeamScore";
 
-// Get the full screen dimensions
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export default function Index() {
-  const { teams, sets, incrementTeamAScore, incrementTeamBScore } =
-    useGameStore();
+  const {
+    teams,
+    sets,
+    incrementTeamAScore,
+    incrementTeamBScore,
+    getCurrentStreak,
+  } = useGameStore();
 
   const leftTeam = teams[0];
   const rightTeam = teams[1];
@@ -20,6 +24,8 @@ export default function Index() {
   const rightTeamScore = sets[sets.length - 1].events.filter(
     (event) => event.team === rightTeam
   ).length;
+
+  const streak = getCurrentStreak();
 
   return (
     <>
@@ -43,6 +49,7 @@ export default function Index() {
           score={leftTeamScore}
           onPress={incrementTeamAScore}
           style={{ backgroundColor: "red" }}
+          streak={streak.teamId === leftTeam.id ? streak.streak : 0}
         />
 
         <TeamScore
@@ -50,6 +57,7 @@ export default function Index() {
           score={rightTeamScore}
           onPress={incrementTeamBScore}
           style={{ backgroundColor: "blue" }}
+          streak={streak.teamId === rightTeam.id ? streak.streak : 0}
         />
 
         <Clock />

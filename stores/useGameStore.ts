@@ -1,38 +1,42 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-type Player = {
+export type Player = {
   name: string;
 };
 
-type Team = {
+export type Team = {
   id: string;
   name: string;
   players: Player[];
 };
 
-type Set = {
+export type GameSet = {
   events: ScoreEvent[];
 };
 
-type ScoreEvent = {
+export type ScoreEvent = {
   team: Team;
 };
 
-type Match = {
+export type Match = {
   id: string;
   teams: [Team, Team];
-  sets: Set[];
+  sets: GameSet[];
   startedAt?: Date;
   finishedAt?: Date;
 };
 
-type MatchActions = {
+export type MatchActions = {
   startMatch: () => void;
   finishMatch: () => void;
   addNewSet: () => void;
   resetCurrentSet: () => void;
   getElapsedTime: () => number;
+  getCurrentStreak: () => {
+    teamId: string | null;
+    streak: number;
+  };
   incrementTeamAScore: () => void;
   incrementTeamBScore: () => void;
   undoLastEvent: () => void;
@@ -109,6 +113,29 @@ const useGameStore = create<Match & MatchActions>()(
       set((state) => {
         state.sets[state.sets.length - 1].events.pop();
       });
+    },
+    getCurrentStreak: () => {
+      const state = get();
+      const currentSet = state.sets[state.sets.length - 1];
+
+      if (currentSet.events.length === 0) {
+        return { teamId: null, streak: 0 };
+      }
+
+      let streak = 1;
+      let lastTeamToScoreId =
+        currentSet.events[currentSet.events.length - 1].team.id;
+
+      for (let i = currentSet.events.length - 2; i >= 0; i--) {
+        const currentEvent = currentSet.events[i];
+        if (currentEvent.team.id === lastTeamToScoreId) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+
+      return { teamId: lastTeamToScoreId, streak };
     },
   }))
 );
