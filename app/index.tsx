@@ -1,3 +1,4 @@
+import React from "react";
 import useGameStore from "@/stores/useGameStore";
 import { Dimensions, StatusBar, View } from "react-native";
 import ActionButtons from "./components/ActionButtons";

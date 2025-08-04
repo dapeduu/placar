@@ -134,6 +134,10 @@ const useGameStore = create<Match & MatchActions>()(
       const state = get();
       const currentSet = state.sets[state.sets.length - 1];
 
+      if (!currentSet) {
+        return { teamId: null, streak: 0 };
+      }
+
       if (currentSet.events.length === 0) {
         return { teamId: null, streak: 0 };
       }
@@ -213,7 +217,11 @@ const useGameStore = create<Match & MatchActions>()(
         state.finishedAt = undefined;
         state.pausedAt = undefined;
         state.totalPausedTime = 0;
-        state.sets = [];
+        state.sets = [
+          {
+            events: [],
+          },
+        ];
       });
     },
     pauseMatch: () => {

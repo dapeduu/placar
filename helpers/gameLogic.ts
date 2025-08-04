@@ -19,7 +19,7 @@ export function getAllSetScores(sets: GameSet[], teamA: Team, teamB: Team) {
   let teamASetScore = 0;
   let teamBSetScore = 0;
 
-  const allSetScores = sets.forEach((set) => {
+  sets.forEach((set) => {
     const { teamA: teamAScore, teamB: teamBScore } = getSetScore(
       set,
       teamA,
