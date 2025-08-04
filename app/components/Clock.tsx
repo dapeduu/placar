@@ -67,7 +67,7 @@ export default function Clock(props: ViewProps) {
       </Text>
 
       <TouchableOpacity onPress={resetMatch}>
-        <FontAwesome6 name="rotate-right" size={24} color="black" />
+        <FontAwesome6 name="retweet" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );

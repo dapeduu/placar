@@ -19,13 +19,13 @@ export default function ActionButtons() {
         style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
         onPress={resetCurrentSet}
       >
-        <Text>Reset Current Set</Text>
+        <FontAwesome6 name="retweet" size={24} color="black" />
       </TouchableOpacity>
       <TouchableOpacity
         style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
         onPress={undoLastEvent}
       >
-        <Text>Undo Last Event</Text>
+        <FontAwesome6 name="rotate-left" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );
