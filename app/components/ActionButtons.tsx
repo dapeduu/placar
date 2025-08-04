@@ -1,8 +1,9 @@
 import useGameStore from "@/stores/useGameStore";
 import { Text, TouchableOpacity, View } from "react-native";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 export default function ActionButtons() {
-  const { startMatch, finishMatch, resetCurrentSet, undoLastEvent } =
+  const { startMatch, finishMatch, resetCurrentSet, undoLastEvent, status } =
     useGameStore();
 
   return (
@@ -14,18 +15,6 @@ export default function ActionButtons() {
         bottom: 20,
       }}
     >
-      <TouchableOpacity
-        style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
-        onPress={startMatch}
-      >
-        <Text>Start Match</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
-        onPress={finishMatch}
-      >
-        <Text>Finish Match</Text>
-      </TouchableOpacity>
       <TouchableOpacity
         style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
         onPress={resetCurrentSet}

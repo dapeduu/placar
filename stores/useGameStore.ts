@@ -23,8 +23,11 @@ export type Match = {
   id: string;
   teams: [Team, Team];
   sets: GameSet[];
+  status: "idle" | "running" | "paused" | "finished";
   startedAt?: Date;
   finishedAt?: Date;
+  pausedAt?: Date;
+  totalPausedTime: number; // milliseconds
 };
 
 export type MatchActions = {
@@ -40,11 +43,15 @@ export type MatchActions = {
   incrementTeamAScore: () => void;
   incrementTeamBScore: () => void;
   undoLastEvent: () => void;
+  pauseMatch: () => void;
+  resumeMatch: () => void;
+  resetMatch: () => void;
 };
 
 const useGameStore = create<Match & MatchActions>()(
   immer((set, get) => ({
     id: "1",
+    status: "idle",
     teams: [
       {
         id: "1",
@@ -62,16 +69,9 @@ const useGameStore = create<Match & MatchActions>()(
         events: [],
       },
     ],
-    startMatch: () => {
-      set((state) => {
-        state.startedAt = new Date();
-      });
-    },
-    finishMatch: () => {
-      set((state) => {
-        state.finishedAt = new Date();
-      });
-    },
+    pausedAt: undefined,
+    totalPausedTime: 0,
+
     addNewSet: () => {
       set((state) => {
         state.sets.push({
@@ -89,11 +89,18 @@ const useGameStore = create<Match & MatchActions>()(
     getElapsedTime: () => {
       const state = get();
       if (!state.startedAt) return 0;
-      if (state.finishedAt && state.startedAt) {
-        return state.finishedAt.getTime() - state.startedAt.getTime();
+
+      let endTime: number;
+      if (state.finishedAt) {
+        endTime = state.finishedAt.getTime();
+      } else if (state.status === "paused" && state.pausedAt) {
+        endTime = state.pausedAt.getTime();
+      } else {
+        endTime = new Date().getTime();
       }
 
-      return new Date().getTime() - state.startedAt.getTime();
+      const totalElapsed = endTime - state.startedAt.getTime();
+      return Math.max(0, totalElapsed - state.totalPausedTime);
     },
     incrementTeamAScore: () => {
       set((state) => {
@@ -136,6 +143,46 @@ const useGameStore = create<Match & MatchActions>()(
       }
 
       return { teamId: lastTeamToScoreId, streak };
+    },
+    startMatch: () => {
+      set((state) => {
+        state.status = "running";
+        state.startedAt = new Date();
+      });
+    },
+    finishMatch: () => {
+      set((state) => {
+        state.status = "finished";
+        state.finishedAt = new Date();
+      });
+    },
+    resetMatch: () => {
+      set((state) => {
+        state.status = "idle";
+        state.startedAt = undefined;
+        state.finishedAt = undefined;
+        state.pausedAt = undefined;
+        state.totalPausedTime = 0;
+        state.sets = [];
+      });
+    },
+    pauseMatch: () => {
+      set((state) => {
+        if (state.status === "running") {
+          state.status = "paused";
+          state.pausedAt = new Date();
+        }
+      });
+    },
+    resumeMatch: () => {
+      set((state) => {
+        if (state.status === "paused" && state.pausedAt) {
+          const pauseDuration = new Date().getTime() - state.pausedAt.getTime();
+          state.totalPausedTime += pauseDuration;
+          state.status = "running";
+          state.pausedAt = undefined;
+        }
+      });
     },
   }))
 );
