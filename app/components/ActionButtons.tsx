@@ -3,8 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 export default function ActionButtons() {
-  const { startMatch, finishMatch, resetCurrentSet, undoLastEvent, status } =
-    useGameStore();
+  const { undoLastEvent } = useGameStore();
 
   return (
     <View
