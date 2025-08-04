@@ -3,6 +3,8 @@ import { Dimensions, StatusBar, View } from "react-native";
 import ActionButtons from "./components/ActionButtons";
 import Clock from "./components/Clock";
 import TeamScore from "./components/TeamScore";
+import { getSetScore } from "@/helpers/gameLogic";
+import SetScore from "./components/SetScore";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -15,15 +17,14 @@ export default function Index() {
     getCurrentStreak,
   } = useGameStore();
 
+  const { teamA: leftTeamScore, teamB: rightTeamScore } = getSetScore(
+    sets[sets.length - 1],
+    teams[0],
+    teams[1]
+  );
+
   const leftTeam = teams[0];
   const rightTeam = teams[1];
-
-  const leftTeamScore = sets[sets.length - 1].events.filter(
-    (event) => event.team === leftTeam
-  ).length;
-  const rightTeamScore = sets[sets.length - 1].events.filter(
-    (event) => event.team === rightTeam
-  ).length;
 
   const streak = getCurrentStreak();
 
@@ -62,6 +63,7 @@ export default function Index() {
 
         <Clock />
         <ActionButtons />
+        <SetScore />
       </View>
     </>
   );

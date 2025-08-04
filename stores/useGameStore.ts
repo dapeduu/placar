@@ -1,3 +1,4 @@
+import { getSetScore } from "@/helpers/gameLogic";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -28,6 +29,8 @@ export type Match = {
   finishedAt?: Date;
   pausedAt?: Date;
   totalPausedTime: number; // milliseconds
+  pointsToWin: number;
+  differenceToWin: number;
 };
 
 export type MatchActions = {
@@ -39,6 +42,10 @@ export type MatchActions = {
   getCurrentStreak: () => {
     teamId: string | null;
     streak: number;
+  };
+  getWinner: () => {
+    winner: Team | null;
+    isGameOver: boolean;
   };
   incrementTeamAScore: () => void;
   incrementTeamBScore: () => void;
@@ -71,6 +78,8 @@ const useGameStore = create<Match & MatchActions>()(
     ],
     pausedAt: undefined,
     totalPausedTime: 0,
+    pointsToWin: 13,
+    differenceToWin: 2,
 
     addNewSet: () => {
       set((state) => {
@@ -143,6 +152,47 @@ const useGameStore = create<Match & MatchActions>()(
       }
 
       return { teamId: lastTeamToScoreId, streak };
+    },
+
+    getAllSetScores: () => {
+      const state = get();
+      const allSetScores = state.sets.map((set) => {
+        const { teamA, teamB } = getSetScore(
+          set,
+          state.teams[0],
+          state.teams[1]
+        );
+        return { teamA, teamB };
+      });
+
+      return {
+        teamA: 0,
+        teamB: 0,
+      };
+    },
+    getWinner: () => {
+      const state = get();
+      const { teamA: teamAScore, teamB: teamBScore } = getSetScore(
+        state.sets[state.sets.length - 1],
+        state.teams[0],
+        state.teams[1]
+      );
+
+      const hasMinimumPoints =
+        teamAScore >= state.pointsToWin || teamBScore >= state.pointsToWin;
+
+      const scoreDifference = Math.abs(teamAScore - teamBScore);
+      const hasSufficientDifference = scoreDifference >= state.differenceToWin;
+
+      let winner: Team | null = null;
+      let isGameOver = false;
+
+      if (hasMinimumPoints && hasSufficientDifference) {
+        winner = teamAScore > teamBScore ? state.teams[0] : state.teams[1];
+        isGameOver = true;
+      }
+
+      return { winner, isGameOver };
     },
     startMatch: () => {
       set((state) => {

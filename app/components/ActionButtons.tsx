@@ -10,21 +10,17 @@ export default function ActionButtons() {
     <View
       style={{
         flexDirection: "row",
-        gap: 10,
+        gap: 20,
         position: "absolute",
         bottom: 20,
+        backgroundColor: "white",
+        padding: 10,
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <TouchableOpacity
-        style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
-        onPress={resetCurrentSet}
-      >
-        <FontAwesome6 name="retweet" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
-        onPress={undoLastEvent}
-      >
+      <TouchableOpacity onPress={undoLastEvent}>
         <FontAwesome6 name="rotate-left" size={24} color="black" />
       </TouchableOpacity>
     </View>
