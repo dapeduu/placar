@@ -1,9 +1,9 @@
-import useGameStore from "@/stores/useGameStore";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { useGameStoreV2 } from "@/stores/useGameStoreV2";
 
 export default function ActionButtons() {
-  const { undoLastEvent } = useGameStore();
+  const { undoLastEvent } = useGameStoreV2();
 
   return (
     <View

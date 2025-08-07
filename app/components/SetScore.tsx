@@ -1,12 +1,15 @@
 import { getAllSetScores } from "@/helpers/gameLogic";
-import useGameStore from "@/stores/useGameStore";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, ViewProps } from "react-native";
+import { useGameStoreV2 } from "@/stores/useGameStoreV2";
+import { Text, View, ViewProps } from "react-native";
 
 export default function SetScore(props: ViewProps) {
-  const { sets, teams } = useGameStore();
-  const { teamA, teamB } = getAllSetScores(sets, teams[0], teams[1]);
+  const { sets, teams, pointsToWin } = useGameStoreV2();
+  const { teamA, teamB } = getAllSetScores(
+    sets,
+    teams[0],
+    teams[1],
+    pointsToWin
+  );
 
   return (
     <View

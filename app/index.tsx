@@ -1,33 +1,36 @@
 import React from "react";
-import useGameStore from "@/stores/useGameStore";
 import { Dimensions, StatusBar, View } from "react-native";
-import ActionButtons from "./components/ActionButtons";
 import Clock from "./components/Clock";
 import TeamScore from "./components/TeamScore";
-import { getSetScore } from "@/helpers/gameLogic";
+import { getCurrentStreak, getSetScore } from "@/helpers/gameLogic";
+import { useGameStoreV2 } from "@/stores/useGameStoreV2";
+import ActionButtons from "./components/ActionButtons";
 import SetScore from "./components/SetScore";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export default function Index() {
-  const {
-    teams,
-    sets,
-    incrementTeamAScore,
-    incrementTeamBScore,
-    getCurrentStreak,
-  } = useGameStore();
-
-  const { teamA: leftTeamScore, teamB: rightTeamScore } = getSetScore(
-    sets[sets.length - 1],
-    teams[0],
-    teams[1]
-  );
+  const { teams, sets, incrementScore } = useGameStoreV2();
 
   const leftTeam = teams[0];
   const rightTeam = teams[1];
+  const leftTeamScore =
+    sets[sets.length - 1]?.events.filter(
+      (event) => event.team.id === leftTeam.id
+    ).length ?? 0;
+  const rightTeamScore =
+    sets[sets.length - 1]?.events.filter(
+      (event) => event.team.id === rightTeam.id
+    ).length ?? 0;
 
-  const streak = getCurrentStreak();
+  const incrementTeamAScore = () => {
+    incrementScore(leftTeam.id);
+  };
+  const incrementTeamBScore = () => {
+    incrementScore(rightTeam.id);
+  };
+
+  const streak = getCurrentStreak(sets);
 
   return (
     <>

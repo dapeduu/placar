@@ -1,4 +1,4 @@
-import useGameStore from "@/stores/useGameStore";
+import { useGameStoreV2 } from "@/stores/useGameStoreV2";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, ViewProps } from "react-native";
@@ -6,12 +6,13 @@ import { Text, TouchableOpacity, View, ViewProps } from "react-native";
 export default function Clock(props: ViewProps) {
   const {
     getElapsedTime,
-    startMatch,
-    pauseMatch,
-    resumeMatch,
-    resetMatch,
-    status,
-  } = useGameStore();
+    resetClock,
+    pauseClock,
+    resumeClock,
+    startClock,
+    pausedAt,
+    startedAt,
+  } = useGameStoreV2();
   const [elapsedTimeInSeconds, setElapsedTimeInSeconds] = useState(0);
 
   useEffect(() => {
@@ -46,19 +47,21 @@ export default function Clock(props: ViewProps) {
     >
       <TouchableOpacity
         onPress={() => {
-          if (status === "idle") {
-            startMatch();
-          } else if (status === "running") {
-            pauseMatch();
+          if (!startedAt) {
+            return startClock();
+          }
+
+          if (pausedAt) {
+            resumeClock();
           } else {
-            resumeMatch();
+            pauseClock();
           }
         }}
       >
-        {status === "running" ? (
-          <FontAwesome6 name="pause" size={24} color="black" />
-        ) : (
+        {pausedAt || !startedAt ? (
           <FontAwesome6 name="play" size={24} color="black" />
+        ) : (
+          <FontAwesome6 name="pause" size={24} color="black" />
         )}
       </TouchableOpacity>
 
@@ -66,7 +69,7 @@ export default function Clock(props: ViewProps) {
         {formatTime(hours)} : {formatTime(minutes)} : {formatTime(seconds)}
       </Text>
 
-      <TouchableOpacity onPress={resetMatch}>
+      <TouchableOpacity onPress={resetClock}>
         <FontAwesome6 name="retweet" size={24} color="black" />
       </TouchableOpacity>
     </View>
